@@ -1,0 +1,10 @@
+com/mosscorp/market/TestContext.java
+ com.mosscorp.market.TestContext
+com/mosscorp/market/handler/PutItemTest.java
+ com.mosscorp.market.handler.PutItemTest
+com/mosscorp/market/handler/PingTest.java
+ com.mosscorp.market.handler.PingTest
+com/mosscorp/market/handler/ListItemsTest.java
+ com.mosscorp.market.handler.ListItemsTest
+com/mosscorp/market/service/MarketServiceTest.java
+ com.mosscorp.market.service.MarketServiceTest
