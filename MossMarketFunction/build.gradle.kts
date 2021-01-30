@@ -10,7 +10,7 @@ repositories {
 dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
     implementation("com.amazonaws:aws-lambda-java-events:3.6.0")
-    implementation("com.amazonaws:aws-java-sdk-dynamodb:1.11.938")
+    implementation("software.amazon.awssdk:dynamodb:2.15.72")
 
     implementation("com.google.dagger:dagger:2.16")
     implementation("org.immutables:value:2.8.2")

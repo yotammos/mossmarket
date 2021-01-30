@@ -1,10 +1,14 @@
 package com.mosscorp.market.data;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.*;
 import com.mosscorp.market.model.MarketItem;
 import com.mosscorp.market.util.Constants;
-import org.apache.http.HttpStatus;
+import software.amazon.awssdk.http.HttpStatusCode;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
+import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.PutItemResponse;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -14,36 +18,38 @@ import java.util.Optional;
 
 public class DynamoDBMarketItemDao implements MarketItemDao {
 
-    private final AmazonDynamoDB dynamoDB;
+    private final DynamoDbClient ddbClient;
     private final String tableName;
 
     @Inject
-    public DynamoDBMarketItemDao(final AmazonDynamoDB dynamoDB, @Named("tableName") String tableName) {
-        this.dynamoDB = dynamoDB;
+    public DynamoDBMarketItemDao(final DynamoDbClient ddbClient, @Named("tableName") String tableName) {
+        this.ddbClient = ddbClient;
         this.tableName = tableName;
     }
 
     @Override
     public void putItem(final MarketItem marketItem) throws Exception {
-        PutItemRequest putItemRequest = new PutItemRequest()
-                .withItem(MarketItemDynamoDBMapper.fromDomain(marketItem));
+        PutItemRequest putItemRequest = PutItemRequest.builder()
+                .item(MarketItemDynamoDBMapper.fromDomain(marketItem))
+                .build();
 
-        PutItemResult result = dynamoDB.putItem(putItemRequest);
-        int statusCode = result.getSdkHttpMetadata().getHttpStatusCode();
-        if (statusCode != HttpStatus.SC_OK) {
+        PutItemResponse result = ddbClient.putItem(putItemRequest);
+        int statusCode = result.sdkHttpResponse().statusCode();
+        if (statusCode != HttpStatusCode.OK) {
             throw new Exception("failed putting item in DB, status code = " + statusCode);
         }
     }
 
     @Override
     public List<MarketItem> listItems(final String accountId) {
-        GetItemRequest getItemRequest = new GetItemRequest()
-                .withKey(Map.of(Constants.ACCOUNT_ID, new AttributeValue(accountId)))
-                .withTableName(tableName);
+        GetItemRequest getItemRequest = GetItemRequest.builder()
+                .key(Map.of(Constants.ACCOUNT_ID, AttributeValue.builder().s(accountId).build()))
+                .tableName(tableName)
+                .build();
 
-        GetItemResult result = dynamoDB.getItem(getItemRequest);
+        GetItemResponse result = ddbClient.getItem(getItemRequest);
 
-        return List.of(MarketItemDynamoDBMapper.toDomain(result.getItem()));
+        return List.of(MarketItemDynamoDBMapper.toDomain(result.item()));
     }
 
     @Override
