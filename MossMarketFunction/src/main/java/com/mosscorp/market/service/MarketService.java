@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MarketService {
     List<MarketItem> listItems(final String accountId);
-    String putItem(final String accountId, final String name, final double price);
+    String putItem(final String accountId, final String name, final double price) throws Exception;
 }

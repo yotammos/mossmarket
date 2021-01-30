@@ -22,7 +22,7 @@ public class MarketServiceImpl implements MarketService {
     }
 
     @Override
-    public String putItem(String accountId, String name, double price) {
+    public String putItem(String accountId, String name, double price) throws Exception {
         String itemId = UUID.randomUUID().toString();
         MarketItem item = ImmutableMarketItem.builder()
                 .accountId(accountId)

@@ -25,7 +25,7 @@ public class InMemoryMarketItemDao implements MarketItemDao {
     }
 
     @Override
-    public void putItem(MarketItem item) {
+    public void putItem(MarketItem item) throws Exception {
         data.add(item);
     }
 

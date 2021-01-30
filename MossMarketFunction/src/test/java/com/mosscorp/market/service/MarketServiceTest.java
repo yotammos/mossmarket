@@ -23,7 +23,7 @@ public class MarketServiceTest {
     }
 
     @Test
-    public void putItemTest() {
+    public void putItemTest() throws Exception {
         PutItemRequest request1 = ImmutablePutItemRequest.builder().accountId("1").name("item1").price(55).build();
         PutItemRequest request2 = ImmutablePutItemRequest.builder().accountId("1").name("item2").price(27.5).build();
 
